@@ -1,0 +1,13 @@
+text: "Hello"
+number_int: 42 
+number_float: 21.3
+enable_boolean: false
+list_of_elements:
+    - 1
+    - 2
+    - 3
+    - 4
+dictionary: {
+    another_text: "World",
+    another_number: 12,
+}
