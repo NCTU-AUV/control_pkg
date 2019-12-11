@@ -61,10 +61,10 @@ class Main():
 			balance_force = np.dot(self.Po.Trust_inv,balance_force)
 			#print(balance_force)
 			force_data = Float32MultiArray(data = balance_force)
-			print force_data
+			#print force_data
 			self.balance_pub.publish(force_data)
 		elif self.state == 0:
-			self.balance_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0]))
+			self.balance_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0,0,0]))
 	def state_change(self,data):
 		self.state = data.data
 if __name__ == "__main__":

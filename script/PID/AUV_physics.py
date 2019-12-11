@@ -27,7 +27,7 @@ class AUV():
 		# ===================================================== #
 		#                        mass                           #
 		# ===================================================== #
-		self.mass_scaler = 27#kg
+		self.mass_scaler = 32#kg
 		self.mass = self.mass_scaler*np.eye(3)
 		self.inertia = np.array([	[850.98,0,0],
 									[0,935.11,0],
@@ -118,3 +118,4 @@ print(Po.mass_effect(np.array([[1,1,1,1,1,1]]).T))
 print(Po.coriolis_effect(vel))
 print(Po.drag_effect(vel))
 '''
+

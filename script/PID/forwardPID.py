@@ -20,7 +20,7 @@ class Main():
 		self.Po = AUV_physics.AUV()
 		self.yaw_error = 0
 		self.forward_pub = rospy.Publisher('/force/forward',Float32MultiArray,queue_size=1)
-		self.vel = 0.1
+		self.vel = 0
 		rospy.Subscriber('/error/yaw', Float32, self.yaw)
 		rospy.Subscriber('/AUVmanage/state',Int32,self.state_change)
 		tStart = time.time()

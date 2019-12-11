@@ -114,10 +114,10 @@ class Main():
             a = self.Po.buoyancy_effect()
             depth_force[2] = depth_force[2] - a[2][0]
             depth_force = np.dot(self.Po.Trust_inv,depth_force)
-            print(depth_force)
+            #print(depth_force)
             force_data = Float32MultiArray(data = depth_force)
             self.depth_pub.publish(force_data)
-            print(time.time()-tStart)
+            #print(time.time()-tStart)
         if self.state == 0:
             self.depth_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0,0,0]))
     def Kp_cb():

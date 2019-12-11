@@ -12,6 +12,7 @@ import tf.transformations
 from geometry_msgs.msg import PoseStamped,Pose
 from geometry_msgs.msg import Quaternion
 from std_msgs.msg import Header
+from os import popen
 
         # convert data to 16bit int numpy array
         #data = np.fromstring(data, dtype=np.uint8)
@@ -29,7 +30,8 @@ class GET_DATA():
         self.yaw =0.
         self.Eular = [0.,0.,0.]
     def get_arduino(self):
-        s = serial.Serial('/dev/ttyACM0',baudrate=115200)
+        serial_port = popen('readlink -f /dev/serial/by-path/pci-0000\:00\:14.0-usb-0\:1\:1.0').read().split()[0]
+        s = serial.Serial(serial_port,baudrate=115200)
         while not rospy.is_shutdown():
             if s.in_waiting:
                 data = s.read(80)
