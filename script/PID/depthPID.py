@@ -73,25 +73,30 @@ class Main():
     def __init__(self):
         rospy.init_node('depth_PID', anonymous=True)
         self.state = 0 
-        rospy.Subscriber('/AUVmanage/state',Int32,self.state_change)
         self.Po = AUV_physics.AUV()
         self.depth_target = 1.
-        rospy.Subscriber('/depth', Float32, self.depth_cb)
-        self.depth_pub = rospy.Publisher('/force/depth',Float32MultiArray,queue_size=10)
-        tStart = time.time()
+        # for PID control
         self.depth_error_I =0.
         self.last_error = 0.
         self.depth_PID = [0,0,0]
+
+        rospy.Subscriber('/AUVmanage/state',Int32,self.state_change)
+        rospy.Subscriber('/Eular', Float32MultiArray, self.Eular_updata)
+        rospy.Subscriber('/depth', Float32, self.depth_cb)
+        self.depth_pub = rospy.Publisher('/force/depth',Float32MultiArray,queue_size=10)
+        tStart = time.time()
         tStart = time.time()
         while not rospy.is_shutdown():
-        	if time.time() - tStart >0.5:
-	            try:
-	                self.depth_PID = rosparam.get_param('/PIDpara/depth')
-	                tStart = time.time()
-	            except Exception as e:
-	                exstr = traceback.format_exc()
-	                print(exstr)
-
+            if time.time() - tStart >0.5:
+                try:
+                    self.depth_PID = rosparam.get_param('/PIDpara/depth')
+                    tStart = time.time()
+                except Exception as e:
+                    exstr = traceback.format_exc()
+                    print(exstr)
+    def Eular_updata)(self,data):
+        data = data.data
+        self.Po.Eular_update(data[0],data[1],data[2])
     def depth_cb(self,data):
         if self.state == 1: #normal state
             tStart = time.time()
@@ -103,11 +108,13 @@ class Main():
             rospy.loginfo('depth error is :' + str(depth_error))
             depth_force = [0,0,0,0,0,0]
             if depth_error > 0.4:
-                depth_force[2] = 30
+                depth_force[2] = Kp*0.4
             elif depth_error < -0.4:
-                depth_force[2] = -30
+                depth_force[2] = Kp*-0.4
             else:
-                self.depth_error_I = self.depth_error_I*0.8+depth_error
+                # for I control
+                self.depth_error_I = self.depth_error_I+depth_error
+                # for D control
                 depth_error_D = depth_error - self.last_error
                 self.last_error = depth_error
                 depth_force[2] = Kp*depth_error +  Ki*self.depth_error_I + Kd*depth_error_D
