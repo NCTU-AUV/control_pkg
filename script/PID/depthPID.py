@@ -106,7 +106,7 @@ class Main():
             Ki = self.depth_PID[1]
             Kd = self.depth_PID[2]
             depth_error = self.depth_target-depth_data
-            rospy.loginfo('depth error is :' + str(depth_error))
+            #rospy.loginfo('depth error is :' + str(depth_error))
             depth_force = [0,0,0,0,0,0]
             if depth_error > 0.4:
                 depth_force[2] = Kp*0.4
@@ -120,8 +120,11 @@ class Main():
                 self.last_error = depth_error
                 depth_force[2] = Kp*depth_error +  Ki*self.depth_error_I + Kd*depth_error_D
             a = self.Po.buoyancy_effect()
-            depth_force[2] = depth_force[2] - a[2][0]
+            depth_force[2] = depth_force[2] + a[2][0]
+            #depth_force[2] = a[2][0]
+            print depth_force
             depth_force = np.dot(self.Po.Trust_inv,depth_force)
+            
             #print(depth_force)
             force_data = Float32MultiArray(data = depth_force)
             self.depth_pub.publish(force_data)
