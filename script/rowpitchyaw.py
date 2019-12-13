@@ -37,8 +37,8 @@ class GET_DATA():
                 data = s.read(80)
                 data =data.replace('\x00','')
                 data =data.split()
-                self.row = float(data[1])
-                self.pitch = float(data[3])
+                self.row = -1*float(data[1])
+                self.pitch = -1*float(data[3])
                 self.yaw = float(data[5])
                 self.Eular = [self.row ,self.pitch,self.yaw]
                 qua = tf.transformations.quaternion_from_euler(self.row*np.pi/180, self.pitch*np.pi/180, 0)
