@@ -77,7 +77,7 @@ class AUV():
 		self.pitch=0.
 		self.yaw=0.
 		#Thrust Mapping
-	def Eular_update(roll,pitch,yaw):
+	def Eular_update(self,roll,pitch,yaw):
 		self.roll=roll
 		self.pitch=pitch
 		self.yaw=yaw

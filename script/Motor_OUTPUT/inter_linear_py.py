@@ -192,10 +192,11 @@ def interpolation(a):
     index = binSearch(x, 0, len(x)-1, a)
     
     if index == -1:
-        return (y[1] - y[0]) / (x[1] - x[0]) * (a - x[0] + y[0])
+        return 1100
     if index == -2:
-        return (y[len(x)-1] - y[len(x)-2]) / (x[len(x)-1] - x[len(x)-2]) * (a - x[len(x)-2]) + y[len(x)-2]
+        return 1900
     return (y[index+1] - y[index]) / (x[index+1] - x[index]) * (a - x[index]) + y[index]
+
 
 class Main():
     def __init__(self):
@@ -229,7 +230,7 @@ class Main():
         self.force_pub.publish(force_data)
         print(self.arduino.readline())
         sleep(1)
-        print('hi!')
+        #print('hi!')
         self.force_pub = rospy.Publisher('/force/output_signal',Float32MultiArray,queue_size=1) 
         rospy.Subscriber('/force/total', Float32MultiArray, self.arduino_out,queue_size =1)
         while not rospy.is_shutdown():
@@ -252,7 +253,7 @@ class Main():
         self.arduino.write(bytearray(output_data))
         force_data = Float32MultiArray(data = output_data)
         self.force_pub.publish(force_data)
-        print self.arduino.readline()
+        self.arduino.readline()
 
 if __name__ == '__main__':
     try:

@@ -94,9 +94,10 @@ class Main():
                 except Exception as e:
                     exstr = traceback.format_exc()
                     print(exstr)
-    def Eular_updata)(self,data):
+    def Eular_updata(self,data):
         data = data.data
         self.Po.Eular_update(data[0],data[1],data[2])
+        #print data
     def depth_cb(self,data):
         if self.state == 1: #normal state
             tStart = time.time()
