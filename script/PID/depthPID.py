@@ -120,9 +120,7 @@ class Main():
                 self.last_error = depth_error
                 depth_force[2] = Kp*depth_error +  Ki*self.depth_error_I + Kd*depth_error_D
             a = self.Po.buoyancy_effect()
-            depth_force[2] = depth_force[2] + a[2][0]
-            #depth_force[2] = a[2][0]
-            print depth_force
+            depth_force[2] = depth_force[2] - a[2][0]
             depth_force = np.dot(self.Po.Trust_inv,depth_force)
             
             #print(depth_force)

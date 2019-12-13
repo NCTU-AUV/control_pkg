@@ -37,7 +37,7 @@ class Main():
 		yaw_error = data.data
 		if self.state == 1:
 			drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]))
-			forward_force = drag_force + np.array([0,0,0,0,0,yaw_error])
+			forward_force = -drag_force + np.array([0,0,0,0,0,yaw_error])
 			#print forward_force
 			forward_force = np.dot(self.Po.Trust_inv,forward_force)
 			print(forward_force)
