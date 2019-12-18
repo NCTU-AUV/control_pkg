@@ -56,11 +56,11 @@ class AUV():
 		# motor 1. [2x3] face and position
 		self.motor = ["","","","","","","",""]
 		#						Vector 					Position
-		self.motor[0]=np.array([[0,0,1.],				[0,-0.285,0]])
-		self.motor[1]=np.array([[0,0,1.],				[-0.31,0,0]])
-		self.motor[2]=np.array([[0,0,1.],				[0,0.285,0]])
-		self.motor[3]=np.array([[0,0,1.],				[0.31,0,0]])
-		self.motor[4]=np.array([[-2**0.5,-2**0.5, 0.],	[0.31,-0.285,0]])
+		self.motor[0]=np.array([[0,0,1],				[0,-0.285,0]])
+		self.motor[1]=np.array([[0,0,-1.],				[-0.31,0,0]])
+		self.motor[2]=np.array([[0,0,0],				[0,0.285,0]])
+		self.motor[4]=np.array([[0,0,-1.],				[0.31,0,0]])
+		self.motor[3]=np.array([[-2**0.5,-2**0.5, 0.],	[0.31,-0.285,0]])
 		self.motor[5]=np.array([[-2**0.5,2**0.5, 0.],	[-0.31,-0.285,0]])
 		self.motor[6]=np.array([[-2**0.5,-2**0.5, 0.],	[-0.31,0.285,0]])
 		self.motor[7]=np.array([[-2**0.5,2**0.5, 0.],	[0.31,0.285,0]])

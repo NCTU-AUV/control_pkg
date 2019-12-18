@@ -16,13 +16,16 @@ import math
 class Main():
 	def __init__(self):
 		rospy.init_node('forward_PID', anonymous=True)
+		self.rate = rospy.Rate(50)
 		self.state = 0 
 		self.Po = AUV_physics.AUV()
 		self.yaw_error = 0
 		self.forward_pub = rospy.Publisher('/force/forward',Float32MultiArray,queue_size=1)
-		self.vel = 0.1
+		self.vel = 0.
+	def start(self):
 		rospy.Subscriber('/error/yaw', Float32, self.yaw)
 		rospy.Subscriber('/AUVmanage/state',Int32,self.state_change)
+		rospy.Subscriber('/depth', Float32, self.depth_cb)
 		tStart = time.time()
 		while not rospy.is_shutdown():
 			if time.time() - tStart >0.5:
@@ -32,24 +35,33 @@ class Main():
 				except Exception as e:
 					exstr = traceback.format_exc()
 					print(exstr)
+			if self.state == 1 and self.depth >1.1 and self.depth <1.2:
+				drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]))
+				forward_force = drag_force + np.array([0,0,0,0,0,self.yaw_error])
+				#print forward_force
+				forward_force = np.dot(self.Po.Trust_inv,forward_force)
+				#print(forward_force)
+				print self.depth
+				force_data = Float32MultiArray(data = forward_force)
+				self.forward_pub.publish(force_data)
+			elif self.state ==1:
+				self.forward_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0,0,0]))
+			elif self.state ==0:
+				self.forward_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0,0,0]))
+	
+			self.rate.sleep()
+
 
 	def yaw(self,data):
-		yaw_error = data.data
-		if self.state == 1:
-			drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]))
-			forward_force = -drag_force + np.array([0,0,0,0,0,yaw_error])
-			#print forward_force
-			forward_force = np.dot(self.Po.Trust_inv,forward_force)
-			print(forward_force)
-			force_data = Float32MultiArray(data = forward_force)
-			self.forward_pub.publish(force_data)
-		elif self.state ==0:
-			self.forward_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0]))
+		self.yaw_error = data.data
 	def state_change(self,data):
 		self.state = data.data
+	def depth_cb(self,data):
+		self.depth = data.data
 if __name__ == "__main__":
 	try:
-		Main()
+		Po = Main()
+		Po.start()
 	except Exception as e:
 		exstr = traceback.format_exc()
 		print(exstr)

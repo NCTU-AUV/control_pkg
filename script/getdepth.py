@@ -31,7 +31,7 @@ class GET_DATA():
                 data =data.replace('\x00','')
                 data =data.split()
                 if data[0] == 'Depth:':
-                    self.depth = float(data[1])
+                    self.depth = float(data[1])+0.2
                     depth = Float32(data = 1)
                     #print(self.depth)
     def start(self):

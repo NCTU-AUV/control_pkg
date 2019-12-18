@@ -74,7 +74,7 @@ class Main():
         rospy.init_node('depth_PID', anonymous=True)
         self.state = 0 
         self.Po = AUV_physics.AUV()
-        self.depth_target = 1.
+        self.depth_target = 0.7
         # for PID control
         self.depth_error_I =0.
         self.last_error = 0.
