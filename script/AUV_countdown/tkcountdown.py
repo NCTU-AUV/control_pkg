@@ -33,4 +33,5 @@ if __name__ == "__main__":
     number = input("num:")
     print(number)
     app = ExampleApp(number)
+    app.wm_geometry("1200x600")
     app.mainloop()
