@@ -108,13 +108,14 @@ class AUV():
  							])
  				)
  		'''
-
+'''
 Po=AUV()
 np.set_printoptions(precision=1)
 np.set_printoptions(linewidth=500)
 print(Po.Trust)
 print(Po.Trust_inv)
 print(np.dot(Po.Trust_inv,Po.Trust))
+'''
 #vel=np.array([[0.1,0,0,0,0,1]])
 #print(Po.buoyancy_effect())
 #print(Po.M_rb)
