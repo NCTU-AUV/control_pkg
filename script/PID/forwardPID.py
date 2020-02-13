@@ -44,8 +44,15 @@ class Forward():
 				#print self.depth
 				force_data = Float32MultiArray(data = forward_force)
 				self.forward_pub.publish(force_data)
+			elif self.state ==3:
+				drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]))
+				forward_force = drag_force + np.array([0,0,0,0,0,self.yaw_error]) + np.array([0,0,0,0,0,self.yaw_error])
+				forward_force = np.dot(self.Po.Trust_inv,forward_force)
+				force_data = Float32MultiArray(data = forward_force)
+				self.forward_pub.publish(force_data)
 			elif self.state ==1 or self.state == 2:
 				self.forward_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0,0,0]))
+
 			elif self.state ==0:
 				self.forward_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0,0,0]))
 	

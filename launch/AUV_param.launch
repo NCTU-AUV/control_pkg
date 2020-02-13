@@ -1,5 +1,4 @@
 <launch>
-	<rosparam command="load" file="$(find auv_control)/config/my_params.yaml" />
 	<rosparam command="load" file="$(find auv_control)/config/altitude.yaml" />
 	<rosparam command="load" file="$(find auv_control)/config/depth.yaml" />
 	<rosparam command="load" file="$(find auv_control)/config/yaw_tune.yaml" />
