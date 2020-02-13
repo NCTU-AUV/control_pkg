@@ -218,22 +218,27 @@ class Main():
             input_data[j] = interpolation(input_data[j])        
         '''
 
-        output_data = []
+        self.output_data = []
 
         for j in range(8):
-            output_data.append(int(input_data[j]//100))
-            output_data.append(int(input_data[j]%100))
+            self.output_data.append(int(input_data[j]//100))
+            self.output_data.append(int(input_data[j]%100))
         
             #print(bytearray(output_data_num))
-        self.arduino.write(bytearray(output_data))
-        force_data = Float32MultiArray(data = output_data)
+        self.arduino.write(bytearray(self.output_data))
+        force_data = Float32MultiArray(data = self.output_data)
         self.force_pub.publish(force_data)
         print(self.arduino.readline())
         sleep(1)
         #print('hi!')
-        self.force_pub = rospy.Publisher('/force/output_signal',Float32MultiArray,queue_size=1) 
+        self.force_pub = rospy.Publisher('/force/output_signal',Float32MultiArray,queue_size=10) 
         rospy.Subscriber('/force/total', Float32MultiArray, self.arduino_out,queue_size =1)
+        r=rospy.Rate(50)
         while not rospy.is_shutdown():
+            self.arduino.write(bytearray(self.output_data))
+            force_data = Float32MultiArray(data = self.output_data)
+            self.force_pub.publish(force_data)
+            print(self.arduino.readline())
             pass
     def arduino_out(self,data):
         #print 'hello'
@@ -244,16 +249,12 @@ class Main():
             input_data.append(interpolation(j * N2lbf))
         #print input_data
         #rospy.loginfo(input_data)
-        output_data = []        
+        self.output_data = []        
         for j in range(8):
-            output_data.append(int(input_data[j]//100))
-            output_data.append(int(input_data[j]%100))
+            self.output_data.append(int(input_data[j]//100))
+            self.output_data.append(int(input_data[j]%100))
         #print (output_data)
             #print(bytearray(output_data_num))
-        self.arduino.write(bytearray(output_data))
-        force_data = Float32MultiArray(data = output_data)
-        self.force_pub.publish(force_data)
-        self.arduino.readline()
 
 if __name__ == '__main__':
     try:

@@ -57,12 +57,12 @@ class AUV():
 		self.motor = ["","","","","","","",""]
 		#						Vector 					Position
 		self.motor[0]=np.array([[0,0,1],				[0,-0.285,0]])
-		self.motor[1]=np.array([[0,0,-1.],				[-0.31,0,0]])
+		self.motor[1]=np.array([[0,0,1.],				[-0.31,0,0]])
 		self.motor[2]=np.array([[0,0,1],				[0,0.285,0]])
-		self.motor[4]=np.array([[0,0,-1.],				[0.31,0,0]])
-		self.motor[3]=np.array([[-2**0.5,-2**0.5, 0.],	[0.31,-0.285,0]])
+		self.motor[3]=np.array([[0,0,-1.],				[0.31,0,0]])
+		self.motor[4]=np.array([[-2**0.5,-2**0.5, 0.],	[0.31,-0.285,0]])
 		self.motor[5]=np.array([[-2**0.5,2**0.5, 0.],	[-0.31,-0.285,0]])
-		self.motor[6]=np.array([[-2**0.5,-2**0.5, 0.],	[-0.31,0.285,0]])
+		self.motor[6]=np.array([[2**0.5,2**0.5, 0.],	[-0.31,0.285,0]])
 		self.motor[7]=np.array([[-2**0.5,2**0.5, 0.],	[0.31,0.285,0]])
 		self.Trust = np.empty(shape=(0,6))
 		for i in self.motor:
@@ -115,12 +115,10 @@ np.set_printoptions(linewidth=500)
 print(Po.Trust)
 print(Po.Trust_inv)
 print(np.dot(Po.Trust_inv,Po.Trust))
-'''
 #vel=np.array([[0.1,0,0,0,0,1]])
+'''
 #print(Po.buoyancy_effect())
 #print(Po.M_rb)
 #print(Po.mass_effect(np.array([[1,1,1,1,1,1]]).T))
 #print(Po.coriolis_effect(vel))
 #print(Po.drag_effect(vel))
-'''
-

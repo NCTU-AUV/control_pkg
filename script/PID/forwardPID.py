@@ -20,7 +20,7 @@ class Forward():
 		self.Po = AUV_physics.AUV()
 		self.yaw_error = 0
 		self.forward_pub = rospy.Publisher('/force/forward',Float32MultiArray,queue_size=1)
-		self.vel = 0.
+		self.vel = 0.3
 		rospy.Subscriber('/error/yaw', Float32, self.yaw)
 		rospy.Subscriber('/AUVmanage/state',Int32,self.state_change)
 		rospy.Subscriber('/depth', Float32, self.depth_cb)
@@ -35,7 +35,7 @@ class Forward():
 				except Exception as e:
 					exstr = traceback.format_exc()
 					print(exstr)
-			if self.state == 1 and self.depth >0.55 and self.depth <0.65:
+			if self.state == 1 or self.state == 2  and self.depth >0.6 and self.depth <0.75:
 				drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]))
 				forward_force = drag_force + np.array([0,0,0,0,0,self.yaw_error])
 				#print forward_force

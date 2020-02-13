@@ -39,7 +39,7 @@ class GET_DATA():
         t.start()
         r = rospy.Rate(100)
         while not rospy.is_shutdown():
-            self.depth_pub.publish(1.)
+            self.depth_pub.publish(0.7)
             r.sleep()
 if __name__ == "__main__":
     try:

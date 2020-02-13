@@ -18,7 +18,7 @@ class Depth():
         rospy.init_node('depth_PID', anonymous=True)
         self.state = 0 
         self.Po = AUV_physics.AUV()
-        self.depth_target = 0.6
+        self.depth_target = 0.7
         # for PID control
         self.depth_error_I =0.
         self.last_error = 0.
@@ -46,7 +46,7 @@ class Depth():
                 depth_error = self.depth_target-self.depth_data
                 #rospy.loginfo('depth error is :' + str(depth_error))
                 depth_force = [0,0,0,0,0,0]
-                if depth_error > 0.4:
+                if depth_error > 04.:
                     depth_force[2] = Kp*0.4
                 elif depth_error < -0.4:
                     depth_force[2] = Kp*-0.4
