@@ -51,11 +51,11 @@ class Balance():
 				self.last_error = balance_error
 				balance_force = Kp*balance_error +  Ki*self.balance_error_I + Kd*balance_error_D
 				#yaw_tune
-				balance_force = balance_force + np.array([0,0,0,0,0,self.tune_yaw])
+				balance_force = -balance_force + np.array([0,0,0,0,0,self.tune_yaw])
 				balance_force = np.dot(self.Po.Trust_inv,balance_force)
 				#print(balance_force)
 				force_data = Float32MultiArray(data = balance_force)
-				#print force_data
+				#print focre_data
 				self.balance_pub.publish(force_data)
 			elif self.state == 0:
 				self.balance_pub.publish(Float32MultiArray(data = [0,0,0,0,0,0,0,0]))
@@ -70,7 +70,7 @@ class Balance():
 if __name__ == "__main__":
 	try:
 		po = Balance()
-		po.main()
+		po.Main()
 	except Exception as e:
 		exstr = traceback.format_exc()
 		print(exstr)

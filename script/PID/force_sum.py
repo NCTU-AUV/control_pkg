@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import Float32
+from std_msgs.msg import Int32
 from std_msgs.msg import Float32MultiArray
 import traceback
 import numpy as np
@@ -8,7 +9,8 @@ import math
 import time
 
 class Sum():
-	def __init__(self):		
+	def __init__(self):
+		self.state = 0
 		self.bdata = np.array([0,0,0,0,0,0,0,0])
 		self.ddata = np.array([0,0,0,0,0,0,0,0])
 		self.fdata = np.array([0,0,0,0,0,0,0,0])
