@@ -37,6 +37,7 @@ class GET_DATA():
                 data = s.read(80)
                 data =data.replace('\x00','')
                 data =data.split()
+                print(data)
                 self.row = -1*float(data[1])
                 self.pitch = -1*float(data[3])
                 self.yaw = float(data[5])
@@ -46,7 +47,6 @@ class GET_DATA():
                 altitude = Pose(orientation=altitude)
                 head = Header(frame_id = 'my_frame')
                 altitude = PoseStamped(pose = altitude,header =head)
-
                 self.pose_pub.publish(altitude)
     def start(self):
         t = threading.Thread(target=self.get_arduino)

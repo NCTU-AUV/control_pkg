@@ -9,9 +9,9 @@ class Manager():
 	def __init__(self):
 		rospy.init_node('countdown', anonymous=True)
 		self.param_list = []
-		self.param_list.append({'name':'/PIDpara/altitude','file':r'/home/eason/catkin_ws/src/auv_control/config/altitude.yaml'})
-		self.param_list.append({'name':'/PIDpara/depth','file':r'/home/eason/catkin_ws/src/auv_control/config/depth.yaml'})
-		self.param_list.append({'name':'/tune/yaw','file':r'/home/eason/catkin_ws/src/auv_control/config/yaw_tune.yaml'})
+		self.param_list.append({'name':'/PIDpara/altitude','file':r'/home/nctu-auv/catkin_ws/src/auv_control/config/altitude.yaml'})
+		self.param_list.append({'name':'/PIDpara/depth','file':r'/home/nctu-auv/catkin_ws/src/auv_control/config/depth.yaml'})
+		self.param_list.append({'name':'/PIDpara/yaw','file':r'/home/nctu-auv/catkin_ws/src/auv_control/config/yaw_tune.yaml'})
 		print(self.param_list[1]['name'])
 	def start(self):
 		rospy.Subscriber('/AUVmanage/countdowner', Int32, self.countdown)

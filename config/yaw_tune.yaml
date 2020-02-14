@@ -1,4 +1,4 @@
-/tune/yaw:
+/PIDpara/yaw:
 - 0.0
 - 0.0678
 - 6.72

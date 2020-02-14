@@ -32,7 +32,7 @@ class Balance():
 			if time.time() - tStart >0.5:
 				try:
 					self.balance_PID = rosparam.get_param('/PIDpara/altitude')
-					self.tune_yaw = rosparam.get_param('/tune/yaw')
+					self.tune_yaw = rosparam.get_param('/PIDpara/yaw')
 					tStart = time.time()
 				except Exception as e:
 					exstr = traceback.format_exc()
@@ -51,7 +51,7 @@ class Balance():
 				self.last_error = balance_error
 				balance_force = Kp*balance_error +  Ki*self.balance_error_I + Kd*balance_error_D
 				#yaw_tune
-				balance_force = -balance_force + np.array([0,0,0,0,0,self.tune_yaw])
+				balance_force = -balance_force + np.array([0,0,0,0,0,self.tune_yaw[0]])
 				balance_force = np.dot(self.Po.Trust_inv,balance_force)
 				#print(balance_force)
 				force_data = Float32MultiArray(data = balance_force)
