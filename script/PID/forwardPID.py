@@ -19,25 +19,34 @@ class Forward():
 		self.state = 0 
 		self.Po = AUV_physics.AUV()
 		self.yaw_error = 0
+        self.yaw_error_I = 0
+        self.yaw_error_I_array = [0,0,0,0,0,0,0,0,0,0]
 		self.forward_pub = rospy.Publisher('/force/forward',Float32MultiArray,queue_size=1)
-		self.vel = 0.3
+		self.vel = 0.1
 		rospy.Subscriber('/error/yaw', Float32, self.yaw)
 		rospy.Subscriber('/AUVmanage/state',Int32,self.state_change)
 		rospy.Subscriber('/depth', Float32, self.depth_cb)
 	def Main(self):
-		r = rospy.Rate(50)
+		r = rospiy.Rate(20)
 		tStart = time.time()
 		while not rospy.is_shutdown():
 			if time.time() - tStart >0.5:
 				try:
-					self.tune_yaw = rosparam.get_param('/tune/yaw')
-					tStart = time.time()
+					para = rosparam.get_param('/PIDpara/yaw')
+					self.tune_yaw = para[0]
+                    Kp = para[1]
+                    Ki = para[2]
+                    Kd = para[3]
+                    tStart = time.time()
 				except Exception as e:
 					exstr = traceback.format_exc()
 					print(exstr)
 			if self.state == 1 or self.state == 2  and self.depth >0.6 and self.depth <0.75:
-				drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]))
-				forward_force = drag_force + np.array([0,0,0,0,0,self.yaw_error])
+				drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0])+np.array(0,0,0,0,0,self.tune_yaw))
+			    self.yaw_error_I = self.yaw_error + self.yaw_error_I - self.yaw_error_I_array[0]
+                self.yaw_error_I_array[0] = self.yaw_error
+                self.yaw_error_I_array = np.roll(self.yaw_error_I_array,1)
+                forward_force = drag_force + np.array([0,0,0,0,0,self.yaw_error*Kp+self.yaw_error_I*Ki])
 				#print forward_force
 				forward_force = np.dot(self.Po.Trust_inv,forward_force)
 				#print(forward_force)
@@ -45,8 +54,11 @@ class Forward():
 				force_data = Float32MultiArray(data = forward_force)
 				self.forward_pub.publish(force_data)
 			elif self.state ==3:
-				drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]))
-				forward_force = drag_force + np.array([0,0,0,0,0,self.yaw_error]) + np.array([0,0,0,0,0,self.yaw_error])
+				drag_force = self.Po.drag_effect(np.array([self.vel,0,0,0,0,0]) +np.array(0,0,0,0,0,self.tune_yaw))
+                self.yaw_error_I = self.yaw_error + self.yaw_error_I - self.yaw_error_I_array[0]
+                self.yaw_error_I_array[0] = self.yaw_error
+                self.yaw_error_I_array = np.roll(self.yaw_error_I_array,1)
+                forward_force = drag_force + np.array([0,0,0,0,0,self.yaw_error*Kp+self.yaw_error_I*Ki])
 				forward_force = np.dot(self.Po.Trust_inv,forward_force)
 				force_data = Float32MultiArray(data = forward_force)
 				self.forward_pub.publish(force_data)

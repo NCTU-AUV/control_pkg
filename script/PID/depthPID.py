@@ -39,7 +39,7 @@ class Depth():
                 except Exception as e:
                     exstr = traceback.format_exc()
                     print(exstr)
-            if self.state == 1 or self.state == 2: #normal state
+            if self.state == 1 or self.state == 2 or self.state ==3: #normal state
                 Kp = self.depth_PID[0]
                 Ki = self.depth_PID[1]
                 Kd = self.depth_PID[2]

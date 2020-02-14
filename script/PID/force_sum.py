@@ -24,7 +24,7 @@ class Sum():
 	def Main(self):
 		rate = rospy.Rate(50)
 		while not rospy.is_shutdown():
-			if self.state == 1:
+			if self.state == 1 or self.state == 3:
 				self.tdata = self.bdata+self.ddata+self.fdata
 				force_data = Float32MultiArray(data = self.tdata)
 				self.force_pub.publish(force_data)

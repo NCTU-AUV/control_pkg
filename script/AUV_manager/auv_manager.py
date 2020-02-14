@@ -2,6 +2,7 @@
 import rospy
 import time
 from std_msgs.msg import Int32
+from std_msgs.msg import Int32MultiArray
 import rosparam
 import yaml
 import traceback
@@ -14,16 +15,16 @@ class Manager():
 		self.param_list.append({'name':'/PIDpara/yaw','file':r'/home/nctu-auv/catkin_ws/src/auv_control/config/yaw_tune.yaml'})
 		print(self.param_list[1]['name'])
 	def start(self):
-		rospy.Subscriber('/AUVmanage/countdowner', Int32, self.countdown)
+		rospy.Subscriber('/AUVmanage/countdowner', Int32MultiArray, self.countdown)
 		rospy.Subscriber('/AUVmanage/dumpparam', Int32, self.dump_param)
 		self.start = rospy.Publisher('/AUVmanage/state',Int32,queue_size=1)
 		while not rospy.is_shutdown():
 			pass
 	def countdown(self,countdowner):
 		print(type(countdowner.data))
-		time.sleep(countdowner.data)
+		time.sleep(countdowner.data[1])
 		rospy.loginfo("start")
-		self.num = Int32(data = 1)
+		self.num = Int32(data = countdowner.data[0])
 		self.start.publish(self.num)
 	def dump_param(self, param_num):
 		param_num = param_num.data
