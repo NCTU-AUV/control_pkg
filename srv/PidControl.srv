@@ -1,0 +1,15 @@
+float64 p1
+float64 po1
+float64 i1
+float64 io1
+float64 d1
+float64 do1
+float64 p2
+float64 po2
+float64 i2
+float64 io2
+float64 d2
+float64 do2
+
+---
+bool f
