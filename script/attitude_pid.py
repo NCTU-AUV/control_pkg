@@ -26,7 +26,7 @@ import rospy
 
 class Attitude:
     
-    def __init__(self, kp_r=1.0, ki_r=0.0, kd_r=0.0, K_roll=10, kp_p=1.0, ki_p=0.0, kd_p=0.0, K_pitch=10):     
+    def __init__(self, kp_r=1.0, ki_r=0.0, kd_r=0.0, K_roll=1, kp_p=1.0, ki_p=0.0, kd_p=0.0, K_pitch=1):     
         rospy.init_node('attitude_pid', anonymous=True)
         self.pub = rospy.Publisher('Motors_Force_Attitude', Float64MultiArray, queue_size=10)
 
@@ -38,6 +38,7 @@ class Attitude:
         self.order_i_r = 0
         self.kd_r = kd_r #0.01
         self.order_d_r = 0
+        self.setPoint_r = -10
         self.K_roll = K_roll
 
         #pitch
@@ -47,17 +48,23 @@ class Attitude:
         self.order_i_p = 0
         self.kd_p = kd_p #0.01
         self.order_d_p = 0
+        self.setPoint_p = 10
         self.K_pitch = K_pitch
 
-        self.roll_pid = pid_class.PID(kp_r, ki_r, kd_r, K_roll, 'attitude', -5)
-        self.pitch_pid = pid_class.PID(kp_p, ki_p, kd_p, K_pitch, 'attitude', 20)
+        self.roll_pid = pid_class.PID(kp_r, ki_r, kd_r, K_roll, 'attitude', self.setPoint_r)
+        self.pitch_pid = pid_class.PID(kp_p, ki_p, kd_p, K_pitch, 'attitude', self.setPoint_p)
 
         #motor_limit
         self.upper_bound = 10000
-        self.lower_bound = 50
+        self.lower_bound = 0.01
 
         #motor
         self.motor = [0.0]*4
+
+        #sum
+        self.sum_roll = 0
+        self.sum_pitch = 0
+        self.cnt = 0
         
         #run
         self.pid_control_server()
@@ -91,9 +98,23 @@ class Attitude:
         #print("Ready to get control msg.")
         #rospy.spin()
 
+    def set_SetPoint(self):
+        if self.cnt == 5:
+            self.cnt = 0
+            self.roll_pid.setSetPoint(self.sum_roll / 5)
+            self.pitch_pid.setSetPoint(self.sum_pitch / 5)
+            self.sum_roll = 0
+            self.sum_pitch = 0        
+
     def callback(self, data):
         #rospy.loginfo(rospy.get_caller_id() + "%s", data.data)
-    
+        
+        #self.cnt += 1
+        #self.sum_roll += data.data[0]
+        #self.sum_pitch += data.data[1]
+
+        #self.set_SetPoint()        
+
         #D term = w
         self.roll_pid.setDTerm(data.data[0])
         self.pitch_pid.setDTerm(data.data[1])
@@ -111,8 +132,10 @@ class Attitude:
     def update_motor(self, force):
         value_roll = force[0]
         value_pitch = force[1]
-
-        self.value = [-value_roll-value_pitch, -value_roll+value_pitch, value_roll+value_pitch, value_roll-value_pitch]
+        #self.value = [value_roll, value_roll, -value_roll, -value_roll]
+        #self.value = [value_pitch, -value_pitch, -value_pitch, value_pitch]
+        self.value = [value_roll+value_pitch, value_roll-value_pitch, 
+        -value_roll-value_pitch, -value_roll+value_pitch]
 
         for i in range(4):
             if self.value[i] < -self.upper_bound:
@@ -129,4 +152,4 @@ class Attitude:
         self.pub.publish(Float64MultiArray(data = self.motor))
 
 if __name__ == '__main__':
-    attitude = Attitude(1, 0, 0, 1, 1, 0, 0, 1)
+    attitude = Attitude(150, -0.05, 0.05, 0.02, 100, 0, 0, 0.02)
