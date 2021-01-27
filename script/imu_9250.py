@@ -10,7 +10,6 @@ from sensor_msgs.msg import Imu
 import time
 import random
 from struct import unpack
-#import tf.transformations
 from tf.transformations import euler_from_quaternion
 
 class IMUAttitude:
@@ -38,7 +37,7 @@ class IMUAttitude:
         #self.imu_t = threading.Thread(target=self.get_data, daemon=True)
         self.imu_t.start()
 
-        self.rate = rospy.Rate(100)
+        #self.rate = rospy.Rate(100)
 
         rospy.spin()
     
@@ -58,11 +57,11 @@ class IMUAttitude:
                 # time.sleep(0.5)
                 #print(attitude)
             
-            #attitude = euler_from_quaternion(data[0:4])
+            attitude = euler_from_quaternion(data[0:4])
             
             #roll, pitch, yaw
-            #rospy.loginfo(attitude)
-            #self.arr_pub.publish(Float64MultiArray(data=attitude))
+            rospy.loginfo(attitude)
+            self.arr_pub.publish(Float64MultiArray(data=attitude))
             
             #imu.orientation
             self.imu_visualize_data.orientation.w = data[0]

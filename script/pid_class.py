@@ -35,15 +35,13 @@ class PID:
     """PID Controller
     """
 
-    def __init__(self, Type, P=0.2, I=0.0, D=0.0, K=1.0, setPoint=0.0):
+    def __init__(self, Type, P=0.2, I=0.0, D=0.0, setPoint=0.0):
 
         self.Kp = P
         self.Ki = I
         self.Kd = D
-        self.K = K
-        self.type = Type
 
-        self.sample_time = 0.00
+        self.sample_time = 0.01
         self.current_time = time.time()
         self.last_time = self.current_time
 
@@ -67,7 +65,7 @@ class PID:
 
         self.output = 0.0
 
-    def update_Feedback(self, feedback_value, ty):
+    def update_Feedback(self, feedback_value):
         """
         Calculates PID value for given eference feedback
 
@@ -96,8 +94,7 @@ class PID:
             elif (self.ITerm > self.windup_guard):
                 self.ITerm = self.windup_guard
             
-            if delta_time > 0 and self.type == 'depth':
-                self.DTerm = delta_error / delta_time
+            self.DTerm = delta_error / delta_time
 
             # Remember last time and last error for next calculation
             self.last_time = self.current_time
@@ -106,9 +103,6 @@ class PID:
             self.output = self.PTerm + (self.Ki * self.ITerm) + (self.Kd * self.DTerm)
            
         return self.output
-
-    def setDTerm(self, Dterm):
-        self.DTerm = Dterm
 
     def setAllCoeff(self, k):
         self.Kp = k[0]
