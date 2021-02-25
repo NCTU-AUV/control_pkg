@@ -106,8 +106,7 @@ class Attitude:
     def update_motor(self, force):
         value_roll = force[0]
         value_pitch = force[1]
-        #self.value = [value_roll, value_roll, -value_roll, -value_roll]
-        #self.value = [value_pitch, -value_pitch, -value_pitch, value_pitch]
+        
         self.value = [value_roll+value_pitch, value_roll-value_pitch, 
         -value_roll-value_pitch, -value_roll+value_pitch]
 
