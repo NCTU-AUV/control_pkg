@@ -25,7 +25,7 @@ import rospy
 
 class Depth:
 
-    def __init__(self, kp_l, ki_l, kd_l, kp_r, ki_r, kd_r):
+    def __init__(self, kp_l=1.0, ki_l=0.0, kd_l=0.0, kp_r=1.0, ki_r=0.0, kd_r=0.0):
         rospy.init_node('depth_pid', anonymous=True)
         self.pub = rospy.Publisher('Motors_Force_Depth', Float64MultiArray, queue_size=10)
         
@@ -94,7 +94,7 @@ class Depth:
         # rospy.init_node('pid_control_server')
         self.s = rospy.Service('depth_pid_control', PidControl, self.handle_pid_control)
         #print("Ready to get control msg.")
-        rospy.spin()
+        #rospy.spin()
 
     def callback(self, data):
         #rospy.loginfo(rospy.get_caller_id() + "%s", data.data)
@@ -106,7 +106,7 @@ class Depth:
         self.talker()
 
     def listener(self):
-        rospy.Subscriber("IMU/Depth", Float64MultiArray, self.callback)
+        rospy.Subscriber("IMU/Depth", Float64MultiArray, callback=self.callback)
         rospy.spin()
 
     def update_motor(self, force):
