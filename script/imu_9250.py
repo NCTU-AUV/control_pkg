@@ -4,8 +4,7 @@ import serial
 import glob
 import rospy
 import threading
-from std_msgs.msg import Float64MultiArray
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64MultiArray, Float64
 from sensor_msgs.msg import Imu
 import time
 import random
@@ -27,6 +26,7 @@ class IMUAttitude:
 
         #For PID
         self.arr_pub = rospy.Publisher('IMU/Attitude', Float64MultiArray, queue_size=10) #[roll, pitch, yaw]
+        self.depth_pub = rospy.Publisher('Depth', Float64, queue_size=10) 
 
         #For visualize
         self.imu_visualize_data = Imu()
@@ -49,7 +49,7 @@ class IMUAttitude:
                 raw_data = self.arduino.readline()
                 #print('arduino raw data: ')
                 #print(raw_data)
-                data = unpack('ffffffffffc', raw_data) 
+                data = unpack('fffffffffffc', raw_data) 
                
             except Exception as e:
                 print('oops')
@@ -83,6 +83,10 @@ class IMUAttitude:
             self.imu_visualize_data.linear_acceleration_covariance[0] = -1.0
                 
             self.imu_visualize_pub.publish(self.imu_visualize_data)
+
+	    #imu.depth
+            self.depth_pub.publish(data[10])
+
             print(data)
             #print(type(self.imu_visualize_data))
 
