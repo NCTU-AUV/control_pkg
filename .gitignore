@@ -1,0 +1,10 @@
+*.swp
+*.swo
+git
+
+# ignore python cache
+**/__pycache__/
+*.py[cod]
+
+# ignore .vscode folder
+**/.vscode/
