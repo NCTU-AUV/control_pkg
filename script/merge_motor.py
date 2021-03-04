@@ -11,7 +11,7 @@ class Motor_Listener:
         self.motor_attitude = [0.0]*6
         self.motor_depth = [0.0]*6
         self.motor_dc = [0.0]*6
-        self.coe = [1.08, -0.95, -0.73, -0.88, 1, -1]  
+        self.coe = [-1, 1, 1, 1, 1, -1] #motor 0 and motor 5 reverse   
         
         rospy.init_node('merge_motor', anonymous=True)
         rospy.on_shutdown(self.shutdown)
@@ -31,7 +31,7 @@ class Motor_Listener:
             self.motor_depth[i] = data.data[i]
 
     def callback_dc(self, data):
-        for i in range(4):
+        for i in range(6):
             self.motor_dc[i] = data.data[i]
     
     def callback_forward(self, data):

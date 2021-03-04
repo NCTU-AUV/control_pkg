@@ -35,7 +35,7 @@ class PID:
     """PID Controller
     """
 
-    def __init__(self, Type, P=0.2, I=0.0, D=0.0, setPoint=0.0):
+    def __init__(self, P=0.2, I=0.0, D=0.0, setPoint=0.0):
 
         self.Kp = P
         self.Ki = I
@@ -79,6 +79,7 @@ class PID:
 
         """
         error = self.SetPoint - feedback_value
+        #print(error)
 
         self.current_time = time.time()
         delta_time = self.current_time - self.last_time
