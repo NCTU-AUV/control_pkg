@@ -25,21 +25,21 @@ import rospy
 
 class Depth:
 
-    def __init__(self, kp=1.0, order_p=0.0, ki=0.0, order_i=0.0, kd=0.0, order_d=0.0, depth=0.0):
+    def __init__(self, kp=1.0, ki=0.0, kd=0.0, depth=0.0):
         rospy.init_node('depth_pid', anonymous=True)
         self.pub = rospy.Publisher('Motors_Force_Depth', Float64MultiArray, queue_size=10)
         
         #Coefficient of PID
         self.kp = kp
-        self.order_p = order_p
+        self.order_p = 0.0
         self.ki = ki #0.01
-        self.order_i = order_i
-        self.kd = kd #0.01i
-        self.order_d = order_d
+        self.order_i = 0.0
+        self.kd = kd #0.01
+        self.order_d = 0.0
 
         #self.depth_pid = pid_class.PID(kp, ki, kd)
         
-        self.depth_pid = pid_class.PID(kp * pow(10, order_p), ki * pow(10, order_i), kd * pow(10, order_d), depth)
+        self.depth_pid = pid_class.PID(kp, ki, kd, depth)
 
         self.value = 0
         
@@ -112,4 +112,4 @@ class Depth:
         self.pub.publish(Float64MultiArray(data = self.motor))
        
 if __name__ == '__main__':
-    depth = Depth(1, 0, 0, 0, 0, 0, 0)
+    depth = Depth(1, 0, 0, 0)

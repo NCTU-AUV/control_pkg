@@ -26,33 +26,31 @@ import rospy
 
 class Attitude:
     
-    def __init__(self, kp_r=1.0, order_p_r=0.0, ki_r=0.0, order_i_r=0.0, kd_r=0.0, order_d_r=0.0, setPoint_r=0.0
-                     , kp_p=1.0, order_p_p=0.0, ki_p=0.0, order_i_p=0.0, kd_p=0.0, order_d_p=0.0, setPoint_p=0.0):
-
+    def __init__(self, kp_r=1.0, ki_r=0.0, kd_r=0.0, setPoint_r=0.0, kp_p=1.0, ki_p=0.0, kd_p=0.0, setPoint_p=0.0):
         rospy.init_node('attitude_pid', anonymous=True)
         self.pub = rospy.Publisher('Motors_Force_Attitude', Float64MultiArray, queue_size=10)
 
         #Coefficient of PID
         #roll
         self.kp_r = kp_r
-        self.order_p_r = order_p_r
+        self.order_p_r = 0.0
         self.ki_r = ki_r #0.01
-        self.order_i_r = order_i_r
+        self.order_i_r = 0.0
         self.kd_r = kd_r #0.01
-        self.order_d_r = order_d_r
+        self.order_d_r = 0.0
         self.setPoint_r = setPoint_r
 
         #pitch
         self.kp_p = kp_p
-        self.order_p_p = order_p_p
+        self.order_p_p = 0.0
         self.ki_p = ki_p #0.01
-        self.order_i_p = order_i_p
+        self.order_i_p = 0.0
         self.kd_p = kd_p #0.01
-        self.order_d_p = order_d_p
+        self.order_d_p = 0.0
         self.setPoint_p = setPoint_p
 
-        self.roll_pid = pid_class.PID(kp_r * pow(10, order_p_r), ki_r * pow(10, order_i_r), kd_r * pow(10, order_d_r), self.setPoint_r)
-        self.pitch_pid = pid_class.PID(kp_p * pow(10, order_p_p), ki_p * pow(10, order_i_p), kd_p * pow(10, order_i_p), self.setPoint_p)
+        self.roll_pid = pid_class.PID(kp_r, ki_r, kd_r, setPoint_r)
+        self.pitch_pid = pid_class.PID(kp_p, ki_p, kd_p, setPoint_p)
 
         #motor_limit
         self.upper_bound = 10000
@@ -126,4 +124,4 @@ class Attitude:
         self.pub.publish(Float64MultiArray(data = self.motor))
 
 if __name__ == '__main__':
-    attitude = Attitude(1.5, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0)
+    attitude = Attitude(1.5, 0, 0, 0, 1, 0, 0, 0)
