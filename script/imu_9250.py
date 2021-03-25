@@ -97,13 +97,6 @@ class IMUAttitude:
                 
             #self.imu_visualize_pub.publish(self.imu_visualize_data)
 
-	    #imu.depth
-            #self.depth_pub.publish(data[10] - DEPTH_OFFSET)
-
-            #data[10] = data[10] - DEPTH_OFFSET
-            #print(data)
-            #print(type(self.imu_visualize_data))
-
             #self.rate.sleep() #100 hz
 
     def shutdown(self):

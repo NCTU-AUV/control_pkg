@@ -25,7 +25,7 @@ import rospy
 
 class Depth:
 
-    def __init__(self, kp=1.0, ki=0.0, kd=0.0, depth=0.0):
+    def __init__(self, kp=1.0, ki=0.0, kd=0.0, depth=0.0, const_force=0.46):
         rospy.init_node('depth_pid', anonymous=True)
         self.pub = rospy.Publisher('Motors_Force_Depth', Float64MultiArray, queue_size=10)
         
@@ -42,6 +42,7 @@ class Depth:
         self.depth_pid = pid_class.PID(kp, ki, kd, depth)
 
         self.value = 0
+        self.const_force = const_force
         
         #motor_limit
         self.upper_bound = 10
@@ -49,7 +50,6 @@ class Depth:
 
         #set depth
         self.depth = depth
-        self.depth_pid.setSetPoint(self.depth)
 
         #motor
         self.motor = [0.0]*4
@@ -94,7 +94,7 @@ class Depth:
         rospy.spin()
 
     def update_motor(self, force):
-        self.value = force
+        self.value = force + self.const_force
         #print(force)
 
         for i in range(4):
