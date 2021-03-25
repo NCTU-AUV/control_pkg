@@ -6,8 +6,9 @@
 -->
     <node name="IMU_Read" pkg="control_pkg" type="imu_9250.py" output="screen" />
    
-
+<!--
     <node name="Attitude_PID_Control" pkg="control_pkg" type="attitude_pid.py" output="screen" />
+-->
     <node name="Depth_PID_Control" pkg="control_pkg" type="depth_pid.py" output="screen" />
     <node name="Merge_Motor_Force" pkg="control_pkg" type="merge_motor.py" output="screen" />
     <node name="Motor_Output" pkg="control_pkg" type="motor_controller.py" output="screen" />

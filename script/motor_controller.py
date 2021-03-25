@@ -106,7 +106,7 @@ class MotorController:
 
         for i in range(16):
             self.set_PWM_ON(self.pca9685_addr, i, 0)
-        for i in range(6):
+        for i in range(16):
             self.set_motor(i, 1500)    # send start signal
         #self.set_motor(1, 1500)
 
@@ -157,7 +157,7 @@ class MotorController:
     @classmethod
     def shutdown(cls):
         for _ in range(3):
-            for i in range(6):
+            for i in range(16):
                 cls.set_motor(i, 1500)
             time.sleep(0.02)
         #slow = [1400, 1420, 1440, 1460, 1480, 1500]

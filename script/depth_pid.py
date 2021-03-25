@@ -44,7 +44,7 @@ class Depth:
         self.value = 0
         
         #motor_limit
-        self.upper_bound = 10000
+        self.upper_bound = 10
         self.lower_bound = 0.01
 
         #set depth
@@ -112,4 +112,4 @@ class Depth:
         self.pub.publish(Float64MultiArray(data = self.motor))
        
 if __name__ == '__main__':
-    depth = Depth(1, 0, 0, 0)
+    depth = Depth(0.04, 0, 0.0025, 80)

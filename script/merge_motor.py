@@ -11,7 +11,7 @@ class Motor_Listener:
         self.motor_attitude = [0.0]*6
         self.motor_depth = [0.0]*6
         self.motor_dc = [0.0]*6
-        self.coe = [-1, 1, 1, 1, 1, -1] #motor 0 and motor 5 reverse   
+        self.coe = [1.11, -1.01, 1.42, -1.21, 1.50, -1] #motor 0 and motor 2 3 reverse   
         
         rospy.init_node('merge_motor', anonymous=True)
         rospy.on_shutdown(self.shutdown)

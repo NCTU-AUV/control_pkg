@@ -9,7 +9,9 @@ from std_msgs.msg import Float64MultiArray
 def talker(pub):
     rate = rospy.Rate(10) # 10hz
     
-    force = [2]*6
+    force = [0.46]*6
+    force[4] = 0.8
+    force[5] = 0.8
     #for _ in range(4):
     #    force.append(0)
     #force[2] += 0.2
@@ -32,6 +34,7 @@ def stop_motor(pub):
 
 if __name__ == '__main__':
     rospy.init_node('talker', anonymous=True)
+
     pub = rospy.Publisher('Motors_Force_DC', Float64MultiArray, queue_size=10)
     rospy.on_shutdown(lambda: stop_motor(pub))
     try:

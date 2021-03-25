@@ -53,7 +53,7 @@ class Attitude:
         self.pitch_pid = pid_class.PID(kp_p, ki_p, kd_p, setPoint_p)
 
         #motor_limit
-        self.upper_bound = 10000
+        self.upper_bound = 10
         self.lower_bound = 0.01
 
         #motor
@@ -106,8 +106,8 @@ class Attitude:
         value_roll = force[0]
         value_pitch = force[1]
         
-        self.value = [value_roll+value_pitch, value_roll-value_pitch, 
-        -value_roll-value_pitch, -value_roll+value_pitch]
+        self.value = [value_roll+value_pitch, -value_roll+value_pitch, 
+        -value_roll-value_pitch, value_roll-value_pitch]
 
         for i in range(4):
             if self.value[i] < -self.upper_bound:
@@ -124,4 +124,4 @@ class Attitude:
         self.pub.publish(Float64MultiArray(data = self.motor))
 
 if __name__ == '__main__':
-    attitude = Attitude(1.5, 0, 0, 0, 1, 0, 0, 0)
+    attitude = Attitude(0.025, 0, 0.01, -7, 0.025, 0, 0.01, 0.5)
