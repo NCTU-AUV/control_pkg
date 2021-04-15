@@ -10,7 +10,7 @@ import depth_pid
 class Controller():
     def __init__(self, command = 'stop'):
         rospy.init_node('Controller', anonymous=True)
-        self.pub_motor = rospy.Publisher('Motor_Force_Command', Float64MultiArray, queue_size=10)
+        self.pub_motor = rospy.Publisher('Motors_Force_Command', Float64MultiArray, queue_size=10)
 
         self.command = command
         self.motor = [0.0]*6
