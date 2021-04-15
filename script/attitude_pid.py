@@ -73,6 +73,10 @@ class Attitude:
                    , self.yaw_pid.update_Feedback(data.data[2])]
         
         self.update_motor(feedback)
+        
+        self.roll_pid.update_motor(feedback[0])
+        self.pitch_pid.update_motor(feedback[1])
+        self.yaw_pid.update_motor(feedback[2])
 
         self.talker()
 
