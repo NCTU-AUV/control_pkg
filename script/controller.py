@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import rospy
 from std_msgs.msg import String, Float64MultiArray
@@ -28,14 +28,14 @@ class Controller():
 
     def switch(self, command):
         return{
-            'stop': self.stop(command),
-            'up': self.move_vertical(command),
-            'down': self.move_vertical(command),
-            'forward': self.move_horizontal(command),
-            'backward': self.move_horizontal(command),
-            'left': self.move_horizontal(command),
-            'right': self.move_horizontal(command)
-        }[command]
+            'stop': self.stop,
+            'up': self.move_vertical,
+            'down': self.move_vertical,
+            'forward': self.move_horizontal,
+            'backward': self.move_horizontal,
+            'left': self.move_horizontal,
+            'right': self.move_horizontal
+        }[command](command)
 
     def stop(self, command):
         for i in range(6):
@@ -46,8 +46,8 @@ class Controller():
             self.motor[i] = -0.5 if command == 'up' else 0.5
 
     def move_horizontal(self, command):
-        self.motor[4] = 0.5 if command == 'forward' or 'right' else -0.5
-        self.motor[5] = 0.5 if command == 'forward' or 'left' else -0.5
+        self.motor[4] = 0.5 if command == 'forward' or command == 'right' else -0.5
+        self.motor[5] = 0.5 if command == 'forward' or command == 'left' else -0.5
 
     def talker(self):
         rospy.loginfo(self.motor)
