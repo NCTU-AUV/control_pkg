@@ -3,6 +3,7 @@
 import rospy
 from std_msgs.msg import String, Float64MultiArray
 import math
+import time
 from control_pkg.srv import PidControl, PidControlResponse
 import attitude_pid
 import depth_pid
@@ -14,6 +15,8 @@ class Controller():
 
         self.command = command
         self.motor = [0.0]*6
+        
+        print('ready to controll vehicle')
 
         self.listener()
     
