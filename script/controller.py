@@ -22,6 +22,7 @@ class Controller():
     
     def listener(self):
         rospy.Subscriber('cmd', String, self.callback)
+        rospy.Subscriber('tracking_command', String, self.callback)
         rospy.spin()
 
     def callback(self, data):

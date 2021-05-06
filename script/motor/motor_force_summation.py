@@ -16,7 +16,9 @@ class Motor_Listener:
         
         rospy.init_node('merge_motor', anonymous=True)
         rospy.on_shutdown(self.shutdown)
+
         self.pub = rospy.Publisher('Motors_Force', Float64MultiArray, queue_size=10)
+        
         rospy.Subscriber('Motors_Force_Attitude', Float64MultiArray, self.callback_attitude)
         rospy.Subscriber('Motors_Force_Depth', Float64MultiArray, self.callback_depth)  
         rospy.Subscriber('Motors_Force_Command', Float64MultiArray, self.callback_command)    
