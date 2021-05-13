@@ -71,7 +71,7 @@ class Roll(pid_class.PID):
         #rospy.spin()
 
     def update_motor(self, force):
-        self.motor = [force, force, force, force]
+        self.motor = [force, force, -force, -force]
 
 if __name__ == '__main__':
     roll = Roll(1.5, 0, 0, 0)
