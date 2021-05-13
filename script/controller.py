@@ -2,9 +2,11 @@
 
 import rospy
 from std_msgs.msg import String, Float64MultiArray
+
 import math
 import time
 from control_pkg.srv import PidControl, PidControlResponse
+from msg import tracking_command
 import attitude_pid
 import depth_pid
 
@@ -18,17 +20,24 @@ class Controller():
         
         print('ready to controll vehicle')
 
-        self.listener()
+        self.listener_joystick()
+        self.listener_CV()
     
-    def listener(self):
+    def listener_joystick(self):
         rospy.Subscriber('cmd', String, self.callback)
-        rospy.Subscriber('tracking_command', String, self.callback)
+        rospy.spin()
+    
+    def listener_CV(self):
+        rospy.Subscriber('tracking_command', tracking_command, self.callback_CV)
         rospy.spin()
 
     def callback(self, data):
         self.command = data.data
         self.switch(data.data)
         self.talker()
+
+    def callback_CV(self, data):
+        self.command = data.yaw_cmd
 
     def switch(self, command):
         return{
@@ -56,7 +65,6 @@ class Controller():
     def talker(self):
         rospy.loginfo(self.motor)
         self.pub_motor.publish(Float64MultiArray(data = self.motor))
-
     
 if __name__ == '__main__':
     controller = Controller()
