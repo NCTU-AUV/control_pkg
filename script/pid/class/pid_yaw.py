@@ -71,7 +71,7 @@ class Yaw(pid_class.PID):
         #rospy.spin()
 
     def update_motor(self, force):
-        self.motor = [force, force]
+        self.motor = [force, -force]
 
 if __name__ == '__main__':
     yaw = Yaw(1.5, 0, 0, 0)

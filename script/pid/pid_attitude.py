@@ -67,6 +67,10 @@ class Attitude:
         #print("Ready to get control msg.")
         #rospy.spin()
 
+    def listener(self):
+        rospy.Subscriber("IMU/Attitude", Float64MultiArray, self.callback)
+        rospy.spin()
+        
     def callback(self, data):
         #rospy.loginfo(rospy.get_caller_id() + "%s", data.data)
         feedback = [self.roll_pid.update_Feedback(data.data[0]), self.pitch_pid.update_Feedback(data.data[1])
@@ -79,10 +83,6 @@ class Attitude:
         self.yaw_pid.update_motor(feedback[2])
 
         self.talker()
-
-    def listener(self):
-        rospy.Subscriber("IMU/Attitude", Float64MultiArray, self.callback)
-        rospy.spin()
 
     def update_motor(self, force):
         value_roll = force[0]

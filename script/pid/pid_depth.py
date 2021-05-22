@@ -80,6 +80,10 @@ class Depth:
         #print("Ready to get control msg.")
         #rospy.spin()
 
+    def listener(self):
+        rospy.Subscriber("Depth", Float64, callback=self.callback)
+        rospy.spin()
+        
     def callback(self, data):
         #print(data.data)
         #rospy.loginfo(rospy.get_caller_id() + "%s", data.data)
@@ -88,10 +92,6 @@ class Depth:
         self.update_motor(feedback)
 
         self.talker()
-
-    def listener(self):
-        rospy.Subscriber("Depth", Float64, callback=self.callback)
-        rospy.spin()
 
     def update_motor(self, force):
         self.value = force + self.const_force

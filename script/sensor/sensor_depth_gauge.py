@@ -14,7 +14,7 @@ from struct import unpack
 
 #DEPTH_OFFSET = 10
 
-class IMUAttitude:
+class Depth_gauge:
     def __init__(self):
         #self.arduino_port = glob.glob('/dev/ttyACM*')[0]       
         
@@ -26,7 +26,7 @@ class IMUAttitude:
             print("fail to open the arduino")
 
         rospy.on_shutdown(self.shutdown)
-        rospy.init_node('IMU_9250', anonymous=True)
+        rospy.init_node('Bar30', anonymous=True)
 
         #For PID
         self.pub = rospy.Publisher('Depth', Float64, queue_size=10) #[roll, pitch, yaw]
@@ -122,7 +122,7 @@ class IMUAttitude:
         print('\nbye')
 
 def main():
-    IMUAttitude()
+    Depth_gauge()
 
 if __name__ == '__main__':
     main()
