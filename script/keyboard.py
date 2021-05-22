@@ -20,7 +20,7 @@ def talker():
                 finally:
                         #pass
                         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-                str1="node1"
+                str1="stop"
                 if ch == 'w':
                         str1 = "forward"
                 elif ch == 'a':
