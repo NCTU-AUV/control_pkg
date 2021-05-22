@@ -1,2 +1,0 @@
-sudo bash -c 'echo "SUBSYSTEMS==\"usb\", KERNEL==\"hidraw*\", ATTRS{idVendor}==\"04d9\", ATTRS{idProduct}==\"b564\", MODE=\"0777\", GROUP=\"plugdev\"" > /etc/udev/rules.d/10-rabboni-usb-config.rules'
-sudo bash -c 'echo "SUBSYSTEMS==\"usb\", KERNEL==\"ttyACM[0-9]*\", MODE=\"0777\"" > /etc/udev/rules.d/11-rabboni-ble-config.rules'
