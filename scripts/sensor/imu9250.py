@@ -10,16 +10,16 @@ import time
 import random
 import math
 from struct import unpack
-#from tf.transformations import euler_from_quaternion
+from tf.transformations import euler_from_quaternion
 
 #DEPTH_OFFSET = 10
 
 class IMUAttitude:
     def __init__(self):
-        #self.arduino_port = glob.glob('/dev/ttyACM*')[0]       
+        #self.arduino_port = glob.glob('/dev/ttyACM1')[0]       
         
         #self.arduino = serial.Serial(self.arduino_port, 115200, timeout=1)
-        self.arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+        self.arduino = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
 
         while not self.arduino.is_open:
             self.arddfsdfuino.open()
@@ -29,42 +29,32 @@ class IMUAttitude:
         rospy.init_node('IMU_9250', anonymous=True)
 
         #For PID
-        self.pub = rospy.Publisher('Depth', Float64, queue_size=10) #[roll, pitch, yaw]
+        self.arr_pub = rospy.Publisher('IMU/Attitude', Float64MultiArray, queue_size=10) #[roll, pitch, yaw]
         #self.depth_pub = rospy.Publisher('Depth', Float64, queue_size=10) 
 
-        '''
         #For visualize
         self.imu_visualize_data = Imu()
         self.imu_visualize_data.header.frame_id = "map"
         self.imu_visualize_pub = rospy.Publisher('IMU/Visualize', Imu, queue_size=10)
-        '''
+
         self.imu_t = threading.Thread(target=self.get_data)
         #self.imu_t = threading.Thread(target=self.get_data, daemon=True)
         self.imu_t.start()
 
         #self.rate = rospy.Rate(100)
-        
+
         rospy.spin()
     
-    def cal(self, x):
-        a = 5.667
-        b = -1127.97
-        
-        # y = ax+b
-        return a*x+b
-
     def get_data(self):
-        data = -1
+        data = [0.0] * 3
 
         while self.arduino.is_open:
             try:
                 raw_data = self.arduino.readline()
                 #print('arduino raw data: ')
                 #print(raw_data)
-                #data = unpack('fffc', raw_data) 
-                data = self.cal(float(raw_data))
-                print(raw_data, data)
-
+                data = unpack('fffc', raw_data) 
+               
             except Exception as e:
                 print('oops')
                 print(e)
@@ -73,7 +63,6 @@ class IMUAttitude:
            
             #attitude = euler_from_quaternion(data[0:4])
             #attitude = [x * 180 / math.pi for x in attitude] 
-            '''
             attitude = list(data[0:3])
 
             roll = attitude[0]
@@ -84,9 +73,11 @@ class IMUAttitude:
             attitude[0] = roll
 
             #roll, pitch, yaw
-            rospy.loginfo(attitude)
+            for i in range(3):
+                attitude[i] = round(attitude[i], 3)
+            print(attitude)
             self.arr_pub.publish(Float64MultiArray(data=attitude))
-            '''
+            
             #imu.orientation
             #self.imu_visualize_data.orientation.w = data[3]
             #self.imu_visualize_data.orientation.x = data[0]
@@ -107,13 +98,6 @@ class IMUAttitude:
             #self.imu_visualize_data.linear_acceleration_covariance[0] = -1.0
                 
             #self.imu_visualize_pub.publish(self.imu_visualize_data)
-
-	    #imu.depth
-            self.pub.publish(data)
-
-            #data[10] = data[10] - DEPTH_OFFSET
-            #print(data)
-            #print(type(self.imu_visualize_data))
 
             #self.rate.sleep() #100 hz
 

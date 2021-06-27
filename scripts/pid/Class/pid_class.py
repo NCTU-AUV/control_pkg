@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3
 #
 # This file is part of IvPID.
@@ -68,15 +69,11 @@ class PID:
     def update_Feedback(self, feedback_value):
         """
         Calculates PID value for given eference feedback
-
         .. math::
             u(t) = K_p e(t) + K_i / int_{0}^{t} e(t)dt + K_d {de}/{dt}
-
         .. figure:: images/pid_1.png
            :align:   center
-
            Test PID with Kp=1.2, Ki=1, Kd=0.001 (test_pid.py)
-
         """
         error = self.SetPoint - feedback_value
         #print(error)

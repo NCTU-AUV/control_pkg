@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-# license removed for brevity
+# This node is for test
+# Output is constant force
 import time
 import rospy
 from std_msgs.msg import String
@@ -9,9 +10,9 @@ from std_msgs.msg import Float64MultiArray
 def talker(pub):
     rate = rospy.Rate(10) # 10hz
     
-    force = [0.46]*6
-    force[4] = 0.8
-    force[5] = 0.8
+    force = [0.86]*4
+    #force[4] = 0.8
+    #force[5] = 0.8
     #for _ in range(4):
     #    force.append(0)
     #force[2] += 0.2

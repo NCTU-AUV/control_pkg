@@ -88,7 +88,7 @@ class MotorController:
 
     def __init__(self):
         self.motor_init()
-        listener = rospy.Subscriber(
+        self.listener = rospy.Subscriber(
             'Motors_Force', Float64MultiArray, self.callback)
 
     def motor_init(self, freq=224):
@@ -106,8 +106,10 @@ class MotorController:
 
         for i in range(16):
             self.set_PWM_ON(self.pca9685_addr, i, 0)
-        for i in range(16):
-            self.set_motor(i, 1500)    # send start signal
+        for _ in range(3):
+            for i in range(16):
+                self.set_motor(i, 1500)    # send start signal
+            time.sleep(0.1)
         #self.set_motor(1, 1500)
 
         ''' Check the desired frequnency is written to register '''
@@ -120,8 +122,10 @@ class MotorController:
         for i in range(6):
             cls.set_motor(i, cmd[i])
 
-        print(f'Total Force:    {data.data}')
-        print(f'Final controll: {cmd}')
+        # print(f'Total Force:    {data.data}')
+        # print(f'Final controll: {cmd}')
+        print('Force:', [f'{_:.2f}' for _ in data.data])
+        print('Final:', [f'{_:.2f}' for _ in cmd])
         # cls.set_motor(1, cmd[1])
         # rospy.loginfo('motor %d final control: %d', 1, cmd[1])
         # rospy.loginfo(data)
@@ -131,7 +135,7 @@ class MotorController:
     def fuse(val):
         if val < 1104:      # 1104
             return 1104
-        if val > 1896:      # 1896
+        elif val > 1896:    # 1896
             return 1896
         return int(val)
 
@@ -154,12 +158,14 @@ class MotorController:
         cls.set_PWM_OFF(cls.pca9685_addr, motor, val)
 
     ''' Will be called if press ctrl+C '''
-    @classmethod
-    def shutdown(cls):
-        for _ in range(3):
-            for i in range(16):
-                cls.set_motor(i, 1500)
-            time.sleep(0.02)
+    # @classmethod
+    def shutdown(self):
+        self.listener.unregister()
+        for i in range(16):
+            cls.set_motor(i, 1500)
+        # for _ in range(3):
+        #     time.sleep(0.1)
+        
         #slow = [1400, 1420, 1440, 1460, 1480, 1500]
         #for j in range(6):
         #    for i in range(16):
@@ -204,7 +210,7 @@ class MotorController:
 
 
 def main(args):
-    MotorController()
+    output_controller = MotorController()
     rospy.init_node('Motor_Controller', anonymous=True)
     rospy.on_shutdown(MotorController.shutdown)
 

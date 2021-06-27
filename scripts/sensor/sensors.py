@@ -16,10 +16,10 @@ from tf.transformations import euler_from_quaternion
 
 class IMUAttitude:
     def __init__(self):
-        #self.arduino_port = glob.glob('/dev/ttyACM1')[0]       
+        self.arduino_port = glob.glob('/dev/ttyACM*')[0]       
         
-        #self.arduino = serial.Serial(self.arduino_port, 115200, timeout=1)
-        self.arduino = serial.Serial('/dev/ttyACM1', 115200, timeout=1)
+        self.arduino = serial.Serial(self.arduino_port, 115200, timeout=1)
+        #self.arduino = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
 
         while not self.arduino.is_open:
             self.arddfsdfuino.open()
@@ -31,6 +31,9 @@ class IMUAttitude:
         #For PID
         self.arr_pub = rospy.Publisher('IMU/Attitude', Float64MultiArray, queue_size=10) #[roll, pitch, yaw]
         #self.depth_pub = rospy.Publisher('Depth', Float64, queue_size=10) 
+
+        # For Depth
+        self.dep_pub = rospy.Publisher('Depth', Float64, queue_size=10)
 
         #For visualize
         self.imu_visualize_data = Imu()
@@ -46,14 +49,14 @@ class IMUAttitude:
         rospy.spin()
     
     def get_data(self):
-        data = [0.0] * 3
+        data = [0.0] * 4
 
         while self.arduino.is_open:
             try:
                 raw_data = self.arduino.readline()
                 #print('arduino raw data: ')
                 #print(raw_data)
-                data = unpack('fffc', raw_data) 
+                data = unpack('ffffc', raw_data) 
                
             except Exception as e:
                 print('oops')
@@ -63,7 +66,7 @@ class IMUAttitude:
            
             #attitude = euler_from_quaternion(data[0:4])
             #attitude = [x * 180 / math.pi for x in attitude] 
-            attitude = list(data[0:3])
+            attitude = list(data[0:4])
 
             roll = attitude[0]
             if roll > 0:
@@ -73,8 +76,9 @@ class IMUAttitude:
             attitude[0] = roll
 
             #roll, pitch, yaw
-            rospy.loginfo(attitude)
-            self.arr_pub.publish(Float64MultiArray(data=attitude))
+            print(["{0:0.2f}".format(i) for i in attitude])
+            self.arr_pub.publish(Float64MultiArray(data=attitude[0:3]))
+            self.dep_pub.publish(attitude[3])
             
             #imu.orientation
             #self.imu_visualize_data.orientation.w = data[3]
