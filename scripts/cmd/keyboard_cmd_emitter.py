@@ -9,7 +9,7 @@ def talker():
         pub=rospy.Publisher('cmd', String, queue_size=10)
         rate=rospy.Rate(1)
         print ("reading from keyboard")
-        print ("w:forward a:left s:back d:right c:stop r:up f:down")
+        print ("w:forward a:left s:back d:right c:stop r:up f:down q:quit")
         while not rospy.is_shutdown():
                 fd = sys.stdin.fileno()
                 old_settings = termios.tcgetattr(fd)
