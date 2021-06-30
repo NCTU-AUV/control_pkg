@@ -4,20 +4,23 @@ import serial
 import glob
 import rospy
 import threading
-from std_msgs.msg import Float64MultiArray
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64MultiArray, Float64
 from sensor_msgs.msg import Imu
 import time
 import random
+import math
 from struct import unpack
 from tf.transformations import euler_from_quaternion
+
+#DEPTH_OFFSET = 10
 
 class IMUAttitude:
     def __init__(self):
         self.arduino_port = glob.glob('/dev/ttyACM*')[0]       
         
         self.arduino = serial.Serial(self.arduino_port, 115200, timeout=1)
-        
+        #self.arduino = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+
         while not self.arduino.is_open:
             self.arduino.open()
             print("fail to open the arduino")
@@ -27,6 +30,10 @@ class IMUAttitude:
 
         #For PID
         self.arr_pub = rospy.Publisher('IMU/Attitude', Float64MultiArray, queue_size=10) #[roll, pitch, yaw]
+        #self.depth_pub = rospy.Publisher('Depth', Float64, queue_size=10) 
+
+        # For Depth
+        self.dep_pub = rospy.Publisher('Depth', Float64, queue_size=10)
 
         #For visualize
         self.imu_visualize_data = Imu()
@@ -42,49 +49,57 @@ class IMUAttitude:
         rospy.spin()
     
     def get_data(self):
-        data = [0.0] * 11
+        data = [0.0] * 4
 
         while self.arduino.is_open:
             try:
                 raw_data = self.arduino.readline()
                 #print('arduino raw data: ')
                 #print(raw_data)
-                data = unpack('ffffffffffc', raw_data) 
+                data = unpack('ffffc', raw_data) 
                
             except Exception as e:
                 print('oops')
                 print(e)
                 # time.sleep(0.5)
                 #print(attitude)
-            
-            attitude = euler_from_quaternion(data[0:4])
-            
+           
+            #attitude = euler_from_quaternion(data[0:4])
+            #attitude = [x * 180 / math.pi for x in attitude] 
+            attitude = list(data[0:4])
+
+            roll = attitude[0]
+            if roll > 0:
+                roll = roll - 180
+            elif roll < 0:
+                roll = roll + 180
+            attitude[0] = roll
+
             #roll, pitch, yaw
-            rospy.loginfo(attitude)
-            self.arr_pub.publish(Float64MultiArray(data=attitude))
+            print(["{0:0.2f}".format(i) for i in attitude])
+            self.arr_pub.publish(Float64MultiArray(data=attitude[0:3]))
+            self.dep_pub.publish(attitude[3])
             
             #imu.orientation
-            self.imu_visualize_data.orientation.w = data[0]
-            self.imu_visualize_data.orientation.x = data[1]
-            self.imu_visualize_data.orientation.y = data[2]
-            self.imu_visualize_data.orientation.z = data[3]
-            self.imu_visualize_data.orientation_covariance[0] = -1.0
+            #self.imu_visualize_data.orientation.w = data[3]
+            #self.imu_visualize_data.orientation.x = data[0]
+            #self.imu_visualize_data.orientation.y = data[1]
+            #self.imu_visualize_data.orientation.z = data[2]
+            #self.imu_visualize_data.orientation_covariance[0] = -1.0
 
             #imu.angular_velocity
-            self.imu_visualize_data.angular_velocity.x = data[4]
-            self.imu_visualize_data.angular_velocity.y = data[5]
-            self.imu_visualize_data.angular_velocity.z = data[6]
-            self.imu_visualize_data.angular_velocity_covariance[0] = -1.0
+            #self.imu_visualize_data.angular_velocity.x = data[4]
+            #self.imu_visualize_data.angular_velocity.y = data[5]
+            #self.imu_visualize_data.angular_velocity.z = data[6]
+            #self.imu_visualize_data.angular_velocity_covariance[0] = -1.0
             
             #imu.linear_acceleration
-            self.imu_visualize_data.linear_acceleration.x = data[7]
-            self.imu_visualize_data.linear_acceleration.y = data[8]
-            self.imu_visualize_data.linear_acceleration.z = data[9]
-            self.imu_visualize_data.linear_acceleration_covariance[0] = -1.0
+            #self.imu_visualize_data.linear_acceleration.x = data[7]
+            #self.imu_visualize_data.linear_acceleration.y = data[8]
+            #self.imu_visualize_data.linear_acceleration.z = data[9]
+            #self.imu_visualize_data.linear_acceleration_covariance[0] = -1.0
                 
-            self.imu_visualize_pub.publish(self.imu_visualize_data)
-            print(data)
-            #print(type(self.imu_visualize_data))
+            #self.imu_visualize_pub.publish(self.imu_visualize_data)
 
             #self.rate.sleep() #100 hz
 
