@@ -22,7 +22,7 @@ class IMUAttitude:
         #self.arduino = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
 
         while not self.arduino.is_open:
-            self.arddfsdfuino.open()
+            self.arduino.open()
             print("fail to open the arduino")
 
         rospy.on_shutdown(self.shutdown)
