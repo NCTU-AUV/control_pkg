@@ -9,7 +9,7 @@ PCA9685 I2C
 http://blog.ittraining.com.tw/2015/07/raspberry-pi2-python-i2c-16-pwm-pca9685.html
 
 Datasheet of T200
-https://bluerobotics.com/store/thrusters/t100-t200-thrusters/t200-thruster/
+https://cad.bluerobotics.com/T200-Public-Performance-Data-10-20V-September-2019.xlsx
 '''
 
 from smbus2 import SMBus
